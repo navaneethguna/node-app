@@ -55,12 +55,6 @@ export const envConfig = {
     serviceName: process.env.SERVICE_NAME,
     logSize: process.env.LOGSIZE || 256,
   },
-  systemIntegration:
-    'http://' +
-    process.env.HDFCERGO_SYSTEM_INTEGRATION_SERVICE_SERVICE_HOST +
-    ':' +
-    process.env.HDFCERGO_SYSTEM_INTEGRATION_SERVICE_SERVICE_PORT +
-    '/api/si',
   secrets: process.env.SECRETS?.split(',') || [],
   defaultPagination: process.env.DEFAULT_PAGINATION,
   seedBasePath: process.env.SEED_BASE_PATH,

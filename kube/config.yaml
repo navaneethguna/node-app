@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: master-config
 data:
-  SERVICE_NAME: 'hdfcergo-master'
+  SERVICE_NAME: 'master'
 
   APP_ENV: 'DEV'
 
@@ -24,8 +24,8 @@ data:
   REDIS_HOST: '10.253.13.19'
   REDIS_PORT: '6379'
 
-  SWAGGER_TITLE: 'HDFCERGO'
-  SWAGGER_DESCRIPTION: 'API Documentation for the app HDFCERGO'
+  SWAGGER_TITLE: 'NODEAPP'
+  SWAGGER_DESCRIPTION: 'API Documentation for the app'
   SWAGGER_VERSION: '1.0.0'
   SWAGGER_AUTH_TYPE: 'http'
   SWAGGER_AUTH_SCHEMA: 'bearer'
@@ -40,7 +40,6 @@ data:
   DEFAULT_REDIS_CACHE_ENABLED: 'true'
 
   GCP_PROJECTID: 'playground-s-11-d3a60f7f'
-  GCP_LOG_NAME: 'hdfcergo-master-log-dev'
 
   SENTRY_TRACES_SAMPLE_RATE: '1.0'
   SENTRY_PROFILES_SAMPLE_RATE: '1.0'
