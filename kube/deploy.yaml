@@ -1,0 +1,84 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "4"
+  labels:
+    app: hdfcergo-master
+  name: hdfcergo-master
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: hdfcergo-master
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: hdfcergo-master
+    spec:
+      initContainers:
+        - name: init-hdfcergo-master
+          image: us-central1-docker.pkg.dev/playground-s-11-d3a60f7f/ar-docker-dev/node-project-dev:v9
+          command: ["sh", "-c", "npm run migrate && echo 'Migration complete' || echo 'Migration failed' && exit 1"]
+          envFrom:
+            - configMapRef:
+                name: master-config
+      containers:
+        - image: us-central1-docker.pkg.dev/playground-s-11-d3a60f7f/ar-docker-dev/node-project-dev:v9
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 10
+            httpGet:
+              path: /api/master
+              port: 3000
+              scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            initialDelaySeconds: 300                                                                                                                                              
+            timeoutSeconds: 1                                                                                                                                                    
+          name: hdfcero-master-1                                                                                                                                                 
+          ports:                                                                                                                                                                 
+            - containerPort: 3000                                                                                                                                                
+          readinessProbe:                                                                                                                                                        
+            failureThreshold: 10                                                                                                                                                 
+            httpGet:                                                                                                                                                             
+              path: /api/master                                                                                                                                                  
+              port: 3000                                                                                                                                                         
+              scheme: HTTP                                                                                                                                                       
+            periodSeconds: 10                                                                                                                                                    
+            initialDelaySeconds: 300                                                                                                                                              
+            successThreshold: 1                                                                                                                                                  
+            timeoutSeconds: 1
+          envFrom:
+            - configMapRef:
+                name: master-config          
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst                                                                                                                                                    
+      restartPolicy: Always                                                                                                                                                      
+      schedulerName: default-scheduler                                                                                                                                           
+      securityContext: {}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    cloud.google.com/neg: '{"ingress": true}'
+  name: hdfcergo-master-service
+spec:
+  ports:
+    - port: 3000
+      name: http
+      protocol: TCP
+      targetPort: 3000
+  selector:
+    app: hdfcergo-master
+  sessionAffinity: None
+  type: NodePort
